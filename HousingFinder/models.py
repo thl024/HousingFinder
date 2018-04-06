@@ -7,6 +7,7 @@ class Apartment(models.Model):
 	# Details
 	name = models.TextField()
 	location = models.TextField()
+	offered_by = models.TextField()
 
 	# Dates
 	date_available = models.DateTimeField()
