@@ -14,6 +14,11 @@ class CraigslistURLScraper(scrapy.Spider):
         'https://sandiego.craigslist.org/search/esd/apa'
     ]
 
+    def __init__(self, *a, **kw):
+        super(CraigslistURLScraper, self).__init__(*a, **kw)
+        self.db = get_db()
+        self.db.drop()
+
     def parse(self, response):
         # Get URLs to housings
         for house_url in response.selector.css('.result-title').xpath("@href").extract():
@@ -35,7 +40,12 @@ class CraigslistURLScraper(scrapy.Spider):
         if rent_price is not None: # Rent not always populated
             rent_price = rent_price[1:]
 
-        description = response.selector.xpath('//section[@id=$val]/text()', val='postingbody').extract_first()
+        description_a = response.selector.xpath('//section[@id=$val]/text()', val='postingbody').extract()
+        description = []
+        for sentence in description_a:
+            stped = sentence.encode('UTF8').strip("\n")
+            if not stped.isspace() and stped:
+                description.append(stped)
         
         size = None
         bedrooms = None
@@ -68,7 +78,7 @@ class CraigslistURLScraper(scrapy.Spider):
 
         # tags
         tags = response.selector.css('.attrgroup')[1].xpath('./span/text()').extract()
-        tags = [x.encode('UTF8') for x in tags]
+        tags = [x.encode('UTF8').strip("\n").strip("\t") for x in tags if not x.isspace()]
 
         listing_url = response.request.url
 
@@ -102,9 +112,9 @@ class CraigslistURLScraper(scrapy.Spider):
                 "address": address,
             }
 
-            apt_col = get_db()
+            
             try:
-                apt_col.replace_one(identifier, data, upsert=True)
+                self.db.replace_one(identifier, data, upsert=True)
                 print("Saved new element: {}".format(address))
             except Exception as e:
                 print("Failed to save apartment: {}".format(address))

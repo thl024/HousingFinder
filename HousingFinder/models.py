@@ -10,7 +10,7 @@ class Apartment(models.Model):
     latitude = models.DecimalField(max_digits=10, decimal_places=8)
     longitude = models.DecimalField(max_digits=11, decimal_places=8)
     offered_by = models.TextField()
-    description = models.TextField()
+    description = ListField()
 
     # Dates
     date_available = models.DateField()
