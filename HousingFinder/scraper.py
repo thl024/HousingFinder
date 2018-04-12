@@ -1,5 +1,9 @@
+from models import Apartment
+
 import scrapy
 import date
+
+from db import get_db
 
 class CraigslistURLScraper(scrapy.Spider):
     name = 'Cragislist URL Scraper'
@@ -19,8 +23,18 @@ class CraigslistURLScraper(scrapy.Spider):
         
     def parse_house_details(self, response):
         name = response.selector.xpath('//span[@id=$val]/text()', val='titletextonly').extract_first()
+
         address = response.selector.css('.mapaddress').xpath('./text()').extract_first()
-        rent_price = response.selector.css('.price').xpath('./text()').extract_first()[1:]
+        if not address is None:
+            address = address.encode('UTF8').strip("\n").strip("\t") if not address.isspace() else None
+
+        latitude = response.selector.xpath('//div[@id=$val]/@data-latitude', val='map').extract_first()
+        longitude = response.selector.xpath('//div[@id=$val]/@data-longitude', val='map').extract_first()
+
+        rent_price = response.selector.css('.price').xpath('./text()').extract_first()
+        if rent_price is not None: # Rent not always populated
+            rent_price = rent_price[1:]
+
         description = response.selector.xpath('//section[@id=$val]/text()', val='postingbody').extract_first()
         
         size = None
@@ -58,5 +72,42 @@ class CraigslistURLScraper(scrapy.Spider):
 
         listing_url = response.request.url
 
-        # Use address and post_datetime_str as keys
+        if address is not None:
+            # Use address and post_datetime_str as keys
+            data = {
+                "name": name,
+                "address": address,
+                "latitude": latitude,
+                "longitude": longitude,
+                "offered_by": None,
+                "description": description,
 
+                "date_available": date_available,
+                "post_date": post_date,
+
+                "rent_price": rent_price,
+                "application_fee": None,
+                "security_deposit": None,
+
+                "size": size,
+                "bedrooms": bedrooms,
+                "bathrooms": bathrooms,
+                "amenities": None,
+                "tags": tags,
+
+                "listing_url": listing_url, 
+            }
+
+            identifier = {
+                "address": address,
+            }
+
+            apt_col = get_db()
+            try:
+                apt_col.replace_one(identifier, data, upsert=True)
+                print("Saved new element: {}".format(address))
+            except Exception as e:
+                print("Failed to save apartment: {}".format(address))
+                print(e)
+        else:
+            print("No address, not saving: {}".format(address))

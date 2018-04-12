@@ -6,7 +6,9 @@ from djangotoolbox.fields import EmbeddedModelField
 class Apartment(models.Model):
     # Details
     name = models.TextField()
-    address = models.TextField()
+    address = models.TextField() # Not always available
+    latitude = models.DecimalField(max_digits=10, decimal_places=8)
+    longitude = models.DecimalField(max_digits=11, decimal_places=8)
     offered_by = models.TextField()
     description = models.TextField()
 
