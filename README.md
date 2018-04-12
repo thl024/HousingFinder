@@ -1,6 +1,6 @@
 # HousingFinder
 
-Scrapes and accesses API's common housing websites such as Craigslist, Zillow, etc. for aggregation to a single site with all housing information.
+Scrapes and accesses API's from common housing websites such as Craigslist, Zillow, etc. for aggregation to a single site.
 
 ### Dependencies
 
