@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from HousingFinder import views
+
+from views import HousingMapView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^housing/', HousingMapView.as_view(), name='housing-map')
 ]
