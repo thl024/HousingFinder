@@ -5,6 +5,7 @@ Scrapes and accesses API's from common housing websites such as Craigslist, Zill
 ### Dependencies
 
 - [Django](https://www.djangoproject.com/)
+- [Django REST Framework](http://www.django-rest-framework.org/)
 - [MongoDB](https://www.mongodb.com/)
 - [MongoDB Engine](https://django-mongodb-engine.readthedocs.io/en/latest/)
 - [Scrapy](https://scrapy.org/)
