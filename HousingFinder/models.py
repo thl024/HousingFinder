@@ -1,15 +1,15 @@
 from django.db import models
 
 from djangotoolbox.fields import ListField
-from djangotoolbox.fields import EmbeddedModelField
 
 class Apartment(models.Model):
+
     # Details
     name = models.TextField()
     address = models.TextField() # Not always available
     latitude = models.DecimalField(max_digits=10, decimal_places=8)
     longitude = models.DecimalField(max_digits=11, decimal_places=8)
-    offered_by = models.TextField()
+    offered_by = models.TextField(null=True)
     description = ListField()
 
     # Dates
@@ -18,14 +18,14 @@ class Apartment(models.Model):
 
     # Costs
     rent_price = models.DecimalField(max_digits=20, decimal_places=2)
-    application_fee = models.DecimalField(max_digits=10, decimal_places=2)
-    security_deposit = models.DecimalField(max_digits=10, decimal_places=2)
+    application_fee = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    security_deposit = models.DecimalField(max_digits=10, decimal_places=2, null=True)
 
     # Features
-    size = models.DecimalField(max_digits=12, decimal_places=2)
+    size = models.DecimalField(max_digits=12, decimal_places=2, null=True)
     bedrooms = models.IntegerField()
     bathrooms = models.IntegerField()
-    amenities = ListField() # Interrelated with description; text parsing methods?
+    amenities = ListField(null=True) # Interrelated with description; text parsing methods?
     tags = ListField()
 
     # URL Data

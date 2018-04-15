@@ -16,8 +16,7 @@ class CraigslistURLScraper(scrapy.Spider):
 
     def __init__(self, *a, **kw):
         super(CraigslistURLScraper, self).__init__(*a, **kw)
-        self.db = get_db()
-        self.db.drop()
+        Apartment.objects.all().delete()
 
     def parse(self, response):
         # Get URLs to housings
@@ -108,16 +107,14 @@ class CraigslistURLScraper(scrapy.Spider):
                 "listing_url": listing_url, 
             }
 
-            identifier = {
-                "address": address,
-            }
-
-            
+            apartment = None
             try:
-                self.db.replace_one(identifier, data, upsert=True)
-                print("Saved new element: {}".format(address))
-            except Exception as e:
-                print("Failed to save apartment: {}".format(address))
-                print(e)
+                apartment = Apartment.objects.get(address=address)
+                for key, value in data.items():
+                    setattr(apartment, key, value)
+            except Apartment.DoesNotExist as e:
+                apartment = Apartment(**data)
+            apartment.save()
+
         else:
             print("No address, not saving: {}".format(address))
