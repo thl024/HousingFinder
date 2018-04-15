@@ -14,7 +14,7 @@ var ApartmentIcon = L.Icon.extend({
 	options: {
         iconUrl: ambulanceIconURL,
         iconSize: new L.Point(24, 24),
-        popupAnchor: new L.Point(0, -24)
+        popupAnchor: new L.Point(0, -18)
 	}
 });
 
@@ -58,8 +58,7 @@ function renderApartments(data) {
 
 	$.each(apartments, function(index, apartment) {
 		var aptIcon = new ApartmentIcon()
-        var aptMarker = L.marker(
-            [apartment.latitude, apartment.longitude],
+        var aptMarker = L.marker([apartment.latitude, apartment.longitude],
             {
                 icon: aptIcon,
             }
@@ -75,6 +74,12 @@ function renderApartments(data) {
             "<b>Bathrooms: </b>" + apartment.bathrooms + 
             '<br/>' + 
             "<b>Size: </b>" + apartment.size + " ft squared"
-        ).addTo(map)
+        ).on('mouseover', function(e) {
+            this.openPopup();
+        }).on('mouseout', function(e) {
+            this.closePopup();
+        }).on('click', function(e) {
+            window.open(apartment.listing_url);
+        }).addTo(map)
 	})
 }
