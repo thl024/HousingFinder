@@ -1,8 +1,9 @@
 from rest_framework import viewsets
 
-from serializers import ApartmentSerializer
-from models import Apartment
+from models import RentalProperty
+from serializers import RentalPropertySerializer
 
-class ApartmentViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Apartment.objects.all()
-    serializer_class = ApartmentSerializer
+
+class RentalPropertyViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = RentalProperty.objects.all()
+    serializer_class = RentalPropertySerializer

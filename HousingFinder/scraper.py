@@ -1,22 +1,21 @@
-from models import Apartment
-
 import scrapy
-import date
 
-from db import get_db
+import date
+from models import RentalProperty
+
 
 class CraigslistURLScraper(scrapy.Spider):
     name = 'Cragislist URL Scraper'
     allowed_domains = ['craigslist.org']
 
-    # Currently on east SD Apartments
+    # Currently on east SD RentalProperties
     start_urls = [
         'https://sandiego.craigslist.org/search/esd/apa'
     ]
 
     def __init__(self, *a, **kw):
         super(CraigslistURLScraper, self).__init__(*a, **kw)
-        Apartment.objects.all().delete()
+        RentalProperty.objects.all().delete()
 
     def parse(self, response):
         # Get URLs to housings
@@ -107,14 +106,14 @@ class CraigslistURLScraper(scrapy.Spider):
                 "listing_url": listing_url, 
             }
 
-            apartment = None
+            rental_property = None
             try:
-                apartment = Apartment.objects.get(address=address)
+                rental_property = RentalProperty.objects.get(address=address)
                 for key, value in data.items():
-                    setattr(apartment, key, value)
-            except Apartment.DoesNotExist as e:
-                apartment = Apartment(**data)
-            apartment.save()
+                    setattr(rental_property, key, value)
+            except RentalProperty.DoesNotExist as e:
+                rental_property = RentalProperty(**data)
+            rental_property.save()
 
         else:
             print("No address, not saving: {}".format(address))

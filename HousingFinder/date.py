@@ -1,5 +1,6 @@
 import datetime
 
+
 def parse_craigslist_date(datestr):
     current_date = datetime.datetime.now()
     if datestr == "now":
@@ -11,6 +12,7 @@ def parse_craigslist_date(datestr):
         if current_date > avail_date:
             avail_date = avail_date.replace(year=current_date.year + 1)
         return avail_date
+
 
 def parseRFC3339(datetimestr):
     for idx, character in enumerate(datetimestr):

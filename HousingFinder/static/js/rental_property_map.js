@@ -7,12 +7,11 @@ let INITIAL_CENTER = [32.861196, -117.174040]
 
 // Variables
 var map;
-var apartments;
 
 // Extend icons
-var ApartmentIcon = L.Icon.extend({
+var RentalIcon = L.Icon.extend({
 	options: {
-        iconUrl: ambulanceIconURL,
+        iconUrl: rentalIconURL,
         iconSize: new L.Point(24, 24),
         popupAnchor: new L.Point(0, -18)
 	}
@@ -32,54 +31,35 @@ $(function () {
     	accessToken: ACCESS_TOKEN
 	}).addTo(map);
 
-	// AJAX Call to get all apartments
-	getApartments()
+	renderRentals()
 
 })
 
-function getApartments() {
-	$.ajax({
-		type: 'GET',
-		datatype: 'json',
-		url: API_BASE_URL + 'apartments',
-
-		error: function (msg) {
-			console.log(msg);
-		},
-
-		success: function (data) {
-			renderApartments(data);
-		},
-	})
-}
-
-function renderApartments(data) {
-	apartments = data;
-
-	$.each(apartments, function(index, apartment) {
-		var aptIcon = new ApartmentIcon()
-        var aptMarker = L.marker([apartment.latitude, apartment.longitude],
+function renderRentals() {
+	$.each(rentals, function(index, rental) {
+		var rntIcon = new RentalIcon()
+        var rntMarker = L.marker([rental.latitude, rental.longitude],
             {
-                icon: aptIcon,
+                icon: rntIcon,
             }
         ).bindPopup(
-            "<b>Name: </b>" + apartment.name +
+            "<b>Name: </b>" + rental.name +
             "<br/>" +
-            "<b>Address: </b>" + apartment.address +
+            "<b>Address: </b>" + rental.address +
             "<br/>" + 
-            "<b>Rent Price: </b>$" + apartment.rent_price +
+            "<b>Rent Price: </b>$" + rental.rent_price +
             "<br/>" + 
-            "<b>Bedrooms: </b>" + apartment.bedrooms +
+            "<b>Bedrooms: </b>" + rental.bedrooms +
             '<br/>' + 
-            "<b>Bathrooms: </b>" + apartment.bathrooms + 
+            "<b>Bathrooms: </b>" + rental.bathrooms + 
             '<br/>' + 
-            "<b>Size: </b>" + apartment.size + " ft squared"
+            "<b>Size: </b>" + rental.size + " ft squared"
         ).on('mouseover', function(e) {
             this.openPopup();
         }).on('mouseout', function(e) {
             this.closePopup();
         }).on('click', function(e) {
-            window.open(apartment.listing_url);
+            window.open(rental.listing_url);
         }).addTo(map)
 	})
 }

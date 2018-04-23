@@ -1,7 +1,8 @@
-from django.core.management.base import BaseCommand, CommandError
-from HousingFinder.scraper import CraigslistURLScraper
+from django.core.management.base import BaseCommand
 from scrapy.crawler import CrawlerProcess
-from optparse import make_option
+
+from HousingFinder.scraper import CraigslistURLScraper
+
 
 class Command(BaseCommand):
     help = 'Scrapes url for storage into database.'

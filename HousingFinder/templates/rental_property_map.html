@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+<title>Housing</title>
+<script type="text/javascript">
+	let rentalIconURL = "{% static 'icons/house.png' %}";
+	let rentals = {{ object_list | safe }};
+</script>
+{% endblock %}
+
+{% block body %}
+
+<div class='row'>
+	<div class="col s12">
+		<div class="map-border">
+	    	<div id="map" style="height: 700px"></div>
+	    </div>
+	</div>
+</div>
+
+<div class='row'>
+	<div class="col s12">
+		<form action="" method="post">
+			{% csrf_token %}
+			<div class="fieldWrapper">
+				{{ form.min_price.label_tag }}
+		    	{{ form.min_price }}
+			</div>
+			<div class="fieldWrapper">
+				{{ form.max_price.label_tag }}
+		    	{{ form.max_price }}
+			</div>
+        	<input type="submit" value="Submit" />
+        </form>
+	</div>
+</div>
+
+<!-- Libraries -->
+
+<!-- CSS -->
+<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+<!-- JS -->
+<script src="{% static 'js/rental_property_map.js' %}"></script>
+
+{% endblock %}
